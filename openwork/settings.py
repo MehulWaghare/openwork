@@ -7,17 +7,17 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# Load .env file
+# Load environment variables
 load_dotenv()
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
-SECRET_KEY = 'django-insecure-g_u_+(_@sm9(h+1d2w1(66j*w+1t!#dn)(=v8n+hfk@sc(x01p'
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY", "development-secret-key")
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"]  # Railway allowed
 
 # Installed apps
 INSTALLED_APPS = [
@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Your apps
     'validation_page',
     'work_for_earn',
     'otp_validation',
@@ -64,7 +66,9 @@ TEMPLATES = [
     },
 ]
 
-# Database - Railway MySQL
+# ------------------------------
+# ✅ Railway MySQL Database Setup
+# ------------------------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -78,7 +82,6 @@ DATABASES = {
         }
     }
 }
-
 
 # Password validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -94,17 +97,24 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static & Media
+# ------------------------------
+# ✅ Static & Media (Railway Safe)
+# ------------------------------
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Email Config (Gmail SMTP)
+# ------------------------------
+# ✅ Email Configuration
+# ------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'wagharemehul1112@gmail.com'
-EMAIL_HOST_PASSWORD = 'pktu dcjp vrpp oryq'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
