@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Chat Assistant | Work For Earn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center p-8">
+    <h1 class="text-2xl font-bold mb-4">💬 AI Chat Assistant</h1>
+
+    <div id="chat-box" class="bg-white shadow-lg rounded-lg w-full max-w-md p-4 h-96 overflow-y-auto mb-4">
+        <div id="messages" class="space-y-2"></div>
+    </div>
+
+    <div class="flex w-full max-w-md">
+        <input id="user-input" type="text" placeholder="Type your message..."
+            class="flex-grow border border-gray-300 rounded-l-lg p-2 focus:outline-none">
+        <button onclick="sendMessage()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">Send</button>
+    </div>
+
+    <script>
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const msgBox = document.getElementById('messages');
+        const message = input.value.trim();
+        if (!message) return;
+
+        msgBox.innerHTML += `<div class='text-right'><b>You:</b> ${message}</div>`;
+        input.value = '';
+
+        try {
+            const response = await fetch('/chatbot/chat/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            if (data.reply) {
+                msgBox.innerHTML += `<div class='text-left text-green-600'><b>Bot:</b> ${data.reply}</div>`;
+            } else if (data.error) {
+                msgBox.innerHTML += `<div class='text-left text-red-500'><b>Bot:</b> ${data.error}</div>`;
+            } else {
+                msgBox.innerHTML += `<div class='text-left text-red-500'><b>Bot:</b> Error occurred.</div>`;
+            }
+
+        } catch (err) {
+            msgBox.innerHTML += `<div class='text-left text-red-500'><b>Bot:</b> Error occurred. Please try again.</div>`;
+        }
+
+        msgBox.scrollTop = msgBox.scrollHeight;
+    }
+    </script>
+</body>
+</html>

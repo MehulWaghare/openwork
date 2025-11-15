@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile | Work For Earn</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body { font-family: 'Poppins', sans-serif; background: #f3f4f6; }
+.card { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.status-pending { color: orange; font-weight: bold; }
+.status-accepted { color: green; font-weight: bold; }
+.status-completed { color: blue; font-weight: bold; }
+.payment-paid { color: green; font-weight: bold; }
+.payment-pending { color: orange; font-weight: bold; }
+.btn { padding: 5px 10px; border-radius: 5px; font-weight: bold; text-decoration: none; }
+.btn-send { background-color: #4ade80; color: white; }
+.btn-send:hover { background-color: #22c55e; }
+</style>
+</head>
+<body>
+<div class="container mx-auto p-6">
+
+<nav class="flex justify-between mb-6">
+<h1 class="text-2xl font-bold">Your Profile</h1>
+<div class="space-x-4">
+<span>Welcome, {{ username }}</span>
+<a href="{% url 'logout' %}" class="text-red-600 font-semibold">Logout</a>
+<a href="{% url 'home' %}" class="text-blue-600 font-semibold">Home</a>
+<a href="{% url 'add_work' %}" class="text-green-600 font-semibold">Add Work</a>
+</div>
+</nav>
+
+<h2 class="text-xl font-bold mb-4">Your Posted Works</h2>
+
+{% if works_posted %}
+    {% for work in works_posted %}
+    <div class="card">
+        <h3 class="text-lg font-semibold mb-1">{{ work.title }} <span class="text-sm text-gray-400">({{ work.category }})</span></h3>
+        <p class="text-gray-700 mb-1">{{ work.description }}</p>
+        <p class="text-gray-500 mb-1">Payment: ₹{{ work.payment }}</p>
+        <p class="text-gray-500 mb-1">Address: {{ work.address }} | Mobile: {{ work.mobile_number }}</p>
+        <p class="text-gray-500 mb-1">Deadline: {{ work.end_time }}</p>
+
+        {% if work.image %}
+            <img src="{{ work.image.url }}" class="mt-2 rounded-lg" style="max-width:100%; max-height:300px;">
+        {% endif %}
+
+        {% if work.accepted_by %}
+            <div class="mt-3">
+                <p class="status-accepted">Accepted by: {{ work.accepted_by.username }}</p>
+                
+                {% if work.accepted_by.email %}
+                    <p class="text-gray-600 text-sm">Email: {{ work.accepted_by.email }}</p>
+                {% endif %}
+                {% if work.accepted_by.profile.mobile_number %}
+                    <p class="text-gray-600 text-sm">Contact: {{ work.accepted_by.profile.mobile_number }}</p>
+                {% endif %}
+            </div>
+
+            {% if work.status == "Completed" %}
+                <p class="status-completed mt-1">Work Completed</p>
+                {% if work.payment_status == "Paid" %}
+                    <p class="payment-paid mt-1">Payment: Paid ✅</p>
+                {% else %}
+                    <p class="payment-pending mt-1">Payment: Pending ⏳</p>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'send_otp' work.id %}" class="btn btn-send mt-2 inline-block">Send OTP</a>
+            {% endif %}
+        {% else %}
+            <p class="status-pending mt-2">Not yet accepted</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p>You have not posted any works yet.</p>
+{% endif %}
+
+<h2 class="text-xl font-bold mb-4 mt-8">Works You Accepted</h2>
+
+{% if works_accepted %}
+    {% for work in works_accepted %}
+    <div class="card">
+        <h3 class="text-lg font-semibold mb-1">{{ work.title }} <span class="text-sm text-gray-400">({{ work.category }})</span></h3>
+        <p class="text-gray-700 mb-1">{{ work.description }}</p>
+        <p class="text-gray-500 mb-1">Payment: ₹{{ work.payment }}</p>
+        <p class="text-gray-500 mb-1">By: {{ work.posted_by.username }}</p>
+
+        {% if work.posted_by.email %}
+            <p class="text-gray-600 text-sm">Email: {{ work.posted_by.email }}</p>
+        {% endif %}
+        {% if work.posted_by.profile.mobile_number %}
+            <p class="text-gray-600 text-sm">Contact: {{ work.posted_by.profile.mobile_number }}</p>
+        {% endif %}
+
+        <p class="text-gray-500 mb-1">Deadline: {{ work.end_time }}</p>
+        
+        {% if work.status == "Completed" %}
+            <p class="status-completed mt-1">Work Completed</p>
+            {% if work.payment_status == "Paid" %}
+                <p class="payment-paid mt-1">Payment: Paid ✅</p>
+            {% else %}
+                <p class="payment-pending mt-1">Payment: Pending ⏳</p>
+            {% endif %}
+        {% else %}
+            <p class="status-accepted mt-1">Accepted</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p>You have not accepted any works yet.</p>
+{% endif %}
+
+</div>
+</body>
+</html>
