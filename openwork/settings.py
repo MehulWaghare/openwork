@@ -70,19 +70,26 @@ TEMPLATES = [
 # ------------------------------
 # ✅ Railway MySQL Database Setup
 # ------------------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("MYSQLDATABASE"),
-        'USER': os.getenv("MYSQLUSER"),
-        'PASSWORD': os.getenv("MYSQLPASSWORD"),
-        'HOST': os.getenv("MYSQLHOST"),
-        'PORT': os.getenv("MYSQLPORT"),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
+if os.environ.get("RENDER") == "true":
+    # ✅ Production (Render) → SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-}
+else:
+    # ✅ Local → MySQL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'openwork',
+            'USER': 'root',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
+    }
 
 # Password validators
 AUTH_PASSWORD_VALIDATORS = [
