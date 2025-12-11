@@ -112,11 +112,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ---------------------------------------------
-# ✅ SendGrid Email Configuration (Render Safe)
+# BREVO (SendinBlue) Email Configuration
 # ---------------------------------------------
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+EMAIL_BACKEND = "django_brevo.backends.BrevoBackend"
 
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-DEFAULT_FROM_EMAIL = os.getenv("FROM_EMAIL", "no-reply@example.com")
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+DEFAULT_FROM_EMAIL = os.getenv("FROM_EMAIL", "")
