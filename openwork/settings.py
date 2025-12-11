@@ -18,7 +18,6 @@ SECRET_KEY = os.getenv("SECRET_KEY", "development-secret-key")
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*", ".onrender.com"]
-  # Railway allowed
 
 # Installed apps
 INSTALLED_APPS = [
@@ -67,11 +66,10 @@ TEMPLATES = [
     },
 ]
 
-# ------------------------------
-# ✅ Railway MySQL Database Setup
-# ------------------------------
+# ---------------------------------------------
+# ✅ Database Setup: SQLite on Render, MySQL locally
+# ---------------------------------------------
 if os.environ.get("RENDER") == "true":
-    # ✅ Production (Render) → SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -79,7 +77,6 @@ if os.environ.get("RENDER") == "true":
         }
     }
 else:
-    # ✅ Local → MySQL
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -105,24 +102,21 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ------------------------------
-# ✅ Static & Media (Railway Safe)
-# ------------------------------
+# ---------------------------------------------
+# Static & Media Files
+# ---------------------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# ------------------------------
-# ✅ Email Configuration
-# ------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# ---------------------------------------------
+# ✅ SendGrid Email Configuration (Render Safe)
+# ---------------------------------------------
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+DEFAULT_FROM_EMAIL = os.getenv("FROM_EMAIL", "no-reply@example.com")
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
