@@ -33,4 +33,6 @@ tzdata==2025.2
 urllib3==2.5.0
 Django
 gunicorn
+django-sendgrid-v5
+
 
