@@ -114,8 +114,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # ---------------------------------------------
 # BREVO (SendinBlue) Email Configuration
 # ---------------------------------------------
-EMAIL_BACKEND = "django_brevo.backends.BrevoBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+EMAIL_HOST = "smtp-relay.brevo.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
-DEFAULT_FROM_EMAIL = os.getenv("FROM_EMAIL", "")
+EMAIL_HOST_USER = os.getenv("BREVO_EMAIL")
+EMAIL_HOST_PASSWORD = os.getenv("BREVO_SMTP_KEY")
+
+DEFAULT_FROM_EMAIL = os.getenv("BREVO_EMAIL")
+
