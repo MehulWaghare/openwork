@@ -34,5 +34,6 @@ urllib3==2.5.0
 Django
 gunicorn
 django-sendgrid-v5
+django-brevo
 
 
